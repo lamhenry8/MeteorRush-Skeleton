@@ -25,10 +25,20 @@ public class EnemyBullet : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if(other.CompareTag("Player"))
+        if (other.CompareTag("Player"))
         {
-            audioSource.PlayOneShot(hitClip);
-            Destroy(gameObject, hitClip.length);
+            Health playerHealth = other.GetComponent<Health>();
+            if (playerHealth != null)
+            {
+                playerHealth.TakeDamage(1f);
+            }
+
+            if (audioSource != null && hitClip != null)
+            {
+                audioSource.PlayOneShot(hitClip);
+            }
+
+            Destroy(gameObject, hitClip != null ? hitClip.length : 0f);
         }
     }
 }

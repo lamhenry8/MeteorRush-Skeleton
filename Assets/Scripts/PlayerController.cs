@@ -24,6 +24,7 @@ public class PlayerController : MonoBehaviour
     public AudioClip explosionClip;
 
     private GameManager gameManager;
+    private Health playerHealth;
 
     public void OnMove(InputValue value)
     {
@@ -47,6 +48,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         gameManager = FindObjectOfType<GameManager>();
+        playerHealth = GetComponent<Health>();
     }
 
     // Update is called once per frame
@@ -64,13 +66,21 @@ public class PlayerController : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if(other.CompareTag("EnemyBullet") || other.CompareTag("Meteor"))
+        if (other.CompareTag("EnemyBullet") || other.CompareTag("Meteor"))
         {
-            audioSource.PlayOneShot(explosionClip);
-
-            if (gameManager != null)
+            if (audioSource != null && explosionClip != null)
             {
-                gameManager.GameOver();
+                audioSource.PlayOneShot(explosionClip);
+            }
+
+            if (playerHealth != null)
+            {
+                playerHealth.TakeDamage(1f);
+            }
+
+            if (other.CompareTag("EnemyBullet"))
+            {
+                Destroy(other.gameObject);
             }
         }
     }
