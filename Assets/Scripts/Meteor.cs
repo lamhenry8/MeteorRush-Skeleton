@@ -1,21 +1,17 @@
 using UnityEngine;
 using UnityEngine.Audio;
 
-public class Bullet : MonoBehaviour
+public class Meteor : MonoBehaviour
 {
-    float speed = 7f;
-    public int pointsPerEnemy = 10;
+    float speed = 2f;
 
     public AudioSource audioSource;
-    public AudioClip enemyHitClip;
+    public AudioClip explosionClip;
 
-    private GameManager gameManager;
-
-     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        gameManager = FindObjectOfType<GameManager>();
+        
     }
 
     // Update is called once per frame
@@ -30,15 +26,11 @@ public class Bullet : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if(other.CompareTag("Enemy"))
+        if(other.CompareTag("Player"))
         {
-            if (gameManager != null)
-            {
-                gameManager.AddScore(pointsPerEnemy);
-            }
-
-            Destroy(other.gameObject);
-            Destroy(gameObject, enemyHitClip != null ? enemyHitClip.length : 0f);
+            Debug.Log("Player hit!");
+            audioSource.PlayOneShot(explosionClip);
+            Destroy(gameObject, explosionClip.length);
         }
     }
 }

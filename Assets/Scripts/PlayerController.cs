@@ -1,9 +1,10 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Audio;
 
 public class PlayerController : MonoBehaviour
 {
-    float moveSpeed = 35f;
+    float moveSpeed = 5f;
     Vector2 moveInput;
 
     float minX = -2.5f;
@@ -18,6 +19,12 @@ public class PlayerController : MonoBehaviour
     float fireRate = 0.25f;
     float nextFireTime = 0f;
 
+    public AudioSource audioSource;
+    public AudioClip shootClip;
+    public AudioClip explosionClip;
+
+    private GameManager gameManager;
+
     public void OnMove(InputValue value)
     {
         moveInput = value.Get<Vector2>();
@@ -25,6 +32,12 @@ public class PlayerController : MonoBehaviour
 
     public void OnAttack()
     {
+        if (gameManager != null && gameManager.IsGameOver)
+        {
+            return;
+        }
+
+        audioSource.PlayOneShot(shootClip);
         Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
         nextFireTime = Time.time + fireRate;
     }
@@ -33,18 +46,32 @@ public class PlayerController : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        gameManager = FindObjectOfType<GameManager>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        Vector3 movement = new Vector3(moveInput.x, moveInput.y, 0) * moveSpeed * Time.deltaTime;
+        Vector3 movement = new Vector3(moveInput.x, moveInput.y, 0);
         transform.position += movement * moveSpeed * Time.deltaTime;
-
         Vector3 pos = transform.position;
+
         pos.x = Mathf.Clamp(pos.x, minX, maxX);
         pos.y = Mathf.Clamp(pos.y, minY, maxY);    
+
         transform.position = pos;
+    }
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if(other.CompareTag("EnemyBullet") || other.CompareTag("Meteor"))
+        {
+            audioSource.PlayOneShot(explosionClip);
+
+            if (gameManager != null)
+            {
+                gameManager.GameOver();
+            }
+        }
     }
 }
