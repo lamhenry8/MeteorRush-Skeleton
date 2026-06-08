@@ -31,20 +31,13 @@ public class Healthbar : MonoBehaviour
 
     private void UpdateHealthBar()
     {
-        if (playerHealth == null || totalhealthBar == null || currenthealthBar == null)
-        {
-            return;
-        }
-
-        float maxHealth = Mathf.Max(1f, playerHealth.MaxHealth);
-        float fillAmount = Mathf.Clamp01(playerHealth.currentHealth / maxHealth);
-
-        totalhealthBar.fillAmount = 1f;
-        currenthealthBar.fillAmount = fillAmount;
-
-        if (currenthealthBar.fillAmount <= 0f)
-        {
-            currenthealthBar.gameObject.SetActive(false);
-        }
+       if (playerHealth.currentHealth == 3)
+    currenthealthBar.fillAmount = 1f;
+else if (playerHealth.currentHealth == 2)
+    currenthealthBar.fillAmount = 0.6667f;
+else if (playerHealth.currentHealth == 1)
+    currenthealthBar.fillAmount = 0.3333f;
+else
+    currenthealthBar.fillAmount = 0f;
     }
 }
