@@ -19,7 +19,7 @@ public class Health : MonoBehaviour
         gameManager = FindObjectOfType<GameManager>();
     }
 
-    public void TakeDamage(float damage = 1f)
+    public void TakeDamage(float damage)
     {
         if (dead)
         {
